@@ -1,13 +1,4 @@
-{% load static %}
-<!doctype html>
-<html>
-  <head>
-    <title>Timeshift</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-  </head>
-  <body>
-    <h1>Timeshift</h1>
-    <p>Project landing page.</p>
-    <script src="{% static 'js/app.js' %}"></script>
-  </body>
-</html>
+{% extends 'core/base.html' %} {% block content %}
+<h1>Timeshift</h1>
+<p>Project landing page.</p>
+{% endblock %}

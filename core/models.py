@@ -1,5 +1,6 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator
+from django.core.exceptions import ValidationError
 
 
 # Create your models here.
@@ -13,19 +14,15 @@ class Event(models.Model):
 
 
 class Calculation(models.Model):
-    velocity = models.FloatField(
-        validators=[MinValueValidator(0.0), MaxValueValidator(0.9999999999)]
-    )  # Fraction of c (0.0 to 1.0)
+    def validate_v(value):
+        if not 0 < value < 1:
+            raise ValidationError("Velocity must be between 0 and 1 (fraction of c)")
+
+    velocity = models.FloatField(validators=[validate_v])  # Fraction of c (0.0 to 1.0)
     proper_time = models.FloatField(validators=[MinValueValidator(0.0)])  # Seconds
     gamma = models.FloatField(null=False, blank=False)
     dilated_time = models.FloatField(null=False, blank=False)  # Seconds
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def clean(self):
-        from django.core.exceptions import ValidationError
-
-        if self.velocity >= 1.0:
-            raise ValidationError({"velocity": "Must be < 1 (speed of light)."})
-
     def __str__(self):
-        return f"Calc t= {self.proper_time} seconds, v = {self.velocity}c"
+        return f"Calc t={self.proper_time}seconds, v ={self.velocity:.3f}c"

@@ -1,0 +1,15 @@
+{% extends 'core/base.html' %} {% block content %}
+<h1>Special Relativity Calculator</h1>
+
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Calculate</button>
+</form>
+
+{% if result %}
+<h2>Results</h2>
+<p>Velocity: {{ result.velocity }} c</p>
+<p>Proper time: {{ result.proper_time }} seconds</p>
+<p>Gamma: {{ result.gamma }}</p>
+<p>Dilated time: {{ result.dilated_time }} seconds</p>
+{% endif %} {% endblock %}

@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Timeshift</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
+  <body>
+    <nav>
+      <a href="{% url 'core:home' %}">Home</a>
+      <a href="{% url 'core:relativistic' %}">Relativistic</a>
+    </nav>
+
+    <main>{% block content %} {% endblock %}</main>
+
+    <script src="{% static 'js/app.js' %}"></script>
+  </body>
+</html>
