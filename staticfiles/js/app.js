@@ -1,2 +1,2 @@
 // Core JS
-console.log('Timeshift loaded');
+console.log("Timeshift loaded");

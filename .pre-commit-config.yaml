@@ -8,4 +8,12 @@ repos:
     rev: v0.14.8
     hooks:
       - id: ruff
-        args: [ --fix ]
+        args: [--fix]
+
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier (local)
+        entry: npx prettier --write
+        language: system
+        types_or: [javascript, html, css, markdown, yaml]
