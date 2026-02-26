@@ -2,7 +2,37 @@
 <h1>Special Relativity Calculator</h1>
 
 <form method="post">
-  {% csrf_token %} {{ form.as_p }}
+  {% csrf_token %}
+
+  <div>
+    <label for="{{ form.velocity.id_for_label }}"
+      >Velocity (fraction of c):</label
+    >
+    <input
+      type="range"
+      id="velocity_slider"
+      name="{{ form.velocity.name }}"
+      min="0"
+      max="0.999999"
+      step="0.01"
+      value="{{ form.velocity.value|default:'0' }}"
+      oninput="vDisplay.value = this.value"
+    />
+    <output id="vDisplay">{{ form.velocity.value|default:'0' }}</output>
+    {% if form.velocity.errors %}
+    <div style="color: red">{{ form.velocity.erros }}</div>
+    {% endif %}
+  </div>
+
+  <div>
+    <label for="{{ form.proper_time.id_for_label }}"
+      >Proper time (seconds):</label
+    >
+    {{ form.proper_time }} {% if form.proper_time.errors %}
+    <div style="color: red">{{ form.proper_time.errors }}</div>
+    {% endif %}
+  </div>
+
   <button type="submit">Calculate</button>
 </form>
 
@@ -12,4 +42,9 @@
 <p>Proper time: {{ result.proper_time }} seconds</p>
 <p>Gamma: {{ result.gamma }}</p>
 <p>Dilated time: {{ result.dilated_time }} seconds</p>
+
+<form method="post" action="{% url 'core:save_calculation' %}">
+  {% csrf_token %}
+  <button type="submit">Save Calculation</button>
+</form>
 {% endif %} {% endblock %}
