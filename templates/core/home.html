@@ -1,4 +1,35 @@
 {% extends 'core/base.html' %} {% block content %}
 <h1>Timeshift</h1>
-<p>Project landing page.</p>
-{% endblock %}
+<p>Time Dilation Calculator</p>
+
+<h2>Recent Calculations</h2>
+{% if calculations %}
+<table>
+  <thead>
+    <tr>
+      <th>Velocity (c)</th>
+      <th>Proper time</th>
+      <th>Gamma</th>
+      <th>Dilated time</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for calc in calculations %}
+    <tr>
+      <td>{{ calc.velocity|floatformat:4 }} c</td>
+      <td>{{ calc.proper_time|floatformat:2 }} seconds</td>
+      <td>{{ calc.gamma|floatformat:2 }} seconds</td>
+      <td>{{ calc.dilated_time|floatformat:2 }} seconds</td>
+      <td>{{ calc.created_at|date:"Y-m-d H:i" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>
+  No calculations saved yet!
+  <a href="{% url 'core:relativistic' %}">Try one now</a>
+</p>
+
+{% endif %} {% endblock %}

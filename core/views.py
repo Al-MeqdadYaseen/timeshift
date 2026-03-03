@@ -10,6 +10,13 @@ from .models import Calculation
 class HomeView(TemplateView):
     template_name = "core/home.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["calculations"] = Calculation.objects.all().order_by("-created_at")[
+            :10
+        ]  # The latest 10
+        return context
+
 
 def health_check(request):
     return JsonResponse({"status": "ok"})

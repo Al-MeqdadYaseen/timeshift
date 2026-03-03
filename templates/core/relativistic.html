@@ -47,4 +47,6 @@
   {% csrf_token %}
   <button type="submit">Save Calculation</button>
 </form>
+{% endif %} {% if form.velocity.errors %}
+<div style="color: red">{{ form.velocity.errors }}</div>
 {% endif %} {% endblock %}
