@@ -8,27 +8,27 @@ GRAVITATIONAL_OBJECTS = {
     "earth": {
         "name": "Earth",
         "multiplier": 0.9999999993,
-        "discription": "Surface gravity",
+        "description": "Surface gravity",
     },
     "sun": {
         "name": "Sun",
         "multiplier": 0.9999989,
-        "discription": "Surface gravity",
+        "description": "Surface gravity",
     },
     "white-dwarf": {
         "name": "White Dwarf",
         "multiplier": 0.9997,
-        "discription": "Typical white dwarf surface gravity",
+        "description": "Typical white dwarf surface gravity",
     },
     "neutron_star": {
         "name": "Neutron Star",
         "multiplier": 0.77,
-        "discription": "Typical neutron star surface gravity",
+        "description": "Typical neutron star surface gravity",
     },
     "black_hole": {
         "name": "Black Hole (near horizon)",
         "multiplier": 0.1,
-        "discription": "Just outside the event horizon",
+        "description": "Just outside the event horizon",
     },
 }
 

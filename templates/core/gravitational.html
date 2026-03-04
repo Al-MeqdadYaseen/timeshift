@@ -1,0 +1,57 @@
+{% extends 'core/base.html' %} {% block content %}
+<h1>Gravitational Time Dilation</h1>
+
+<form method="post">
+  {% csrf_token %}
+
+  <div>
+    <label for="object_key">Celestial Object:</label>
+    <select name="object_key" id="object_key" required>
+      <option value="">Select an object...</option>
+      {% for key, obj in objects.items %}
+      <option
+        value="{{ key }}"
+        {%
+        if
+        request.POST.object_key=""
+        ="key"
+        %}selected{%
+        endif
+        %}
+      >
+        {{ obj.name }} - {{ obj.description }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div>
+    <label for="proper_time">Proper time (seconds):</label>
+    <input
+      type="number"
+      name="proper_time"
+      id="proper_time"
+      step="any"
+      min="0"
+      value="{{ request.POST.proper_time|default:'' }}"
+      required
+    />
+  </div>
+
+  {% if error %}
+  <div style="color: red; margin: 1rem 0">Error: {{ error }}</div>
+  {% endif %}
+
+  <button type="submit">Calculate</button>
+</form>
+
+{% if result %}
+<h2>Results</h2>
+<p>Object: {{ result.object_name }}</p>
+<p>Proper time: {{ result.proper_time|floatformat:4 }} seconds</p>
+<p>Time dilation factor: {{ result.gravitational_factor|floatformat:10 }}</p>
+<p>
+  <strong>Dilated time: {{ result.dilated_time|floatformat:4 }} seconds</strong>
+</p>
+
+{% endif %} {% endblock %}
