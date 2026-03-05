@@ -15,22 +15,30 @@ class Event(models.Model):
 
 class Calculation(models.Model):
     CALCULATION_TYPE = [
-        ("relativistic", "Special Relativity"),
+        ("relativistic", "Relativistic time dilation"),
         ("gravitational", "Gravitational time dilation"),
     ]
 
     calculation_type = models.CharField(
-        max_length=20, choices=CALCULATION_TYPE, default="relativistic"
+        max_length=20, choices=CALCULATION_TYPE, db_index=True
     )
 
+    # Common Fields
+    proper_time = models.FloatField(validators=[MinValueValidator(0.0)])  # Seconds
+    dilated_time = models.FloatField()  # Seconds
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # Special relativity fields
     def validate_v(value):
         if not 0 < value < 1:
             raise ValidationError("Velocity must be between 0 and 1 (fraction of c)")
 
-    velocity = models.FloatField(validators=[validate_v])  # Fraction of c (0.0 to 1.0)
-    proper_time = models.FloatField(validators=[MinValueValidator(0.0)])  # Seconds
+    velocity = models.FloatField(
+        validators=[validate_v], null=True, blank=True
+    )  # Fraction of c (0.0 to 1.0)
     gamma = models.FloatField(null=True, blank=True)
-    dilated_time = models.FloatField(null=False, blank=False)  # Seconds
+
+    # Gravitational fields
     gravitational_factor = models.FloatField(
         validators=[MinValueValidator(0.0), MaxValueValidator(1.0)],
         null=True,
@@ -39,7 +47,10 @@ class Calculation(models.Model):
     object_key = models.CharField(
         max_length=50, null=True, blank=True
     )  # Which preset used
-    created_at = models.DateTimeField(auto_now_add=True)
+    object_name = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return f"Calc t={self.proper_time}seconds, v ={self.velocity:.3f}c"
+        if self.calculation_type == "relativistic":
+            return f"Relativistic: v={self.velocity:.3f}c, τ={self.proper_time}"
+        else:
+            return f"Gravitational: {self.object_name}, τ={self.proper_time}"

@@ -54,4 +54,8 @@
   <strong>Dilated time: {{ result.dilated_time|floatformat:4 }} seconds</strong>
 </p>
 
+<form method="post" action="{% url 'core:save_gravitational' %}">
+  {% csrf_token %}
+  <button type="submit">Save Calculation</button>
+</form>
 {% endif %} {% endblock %}

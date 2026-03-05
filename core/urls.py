@@ -8,4 +8,5 @@ urlpatterns = [
     path("relativistic/", views.relativistic_view, name="relativistic"),
     path("save-calculation/", views.save_calculation, name="save_calculation"),
     path("gravitational/", views.gravitational_view, name="gravitational"),
+    path("save-gravitational/", views.save_gravitational, name="save_gravitational"),
 ]

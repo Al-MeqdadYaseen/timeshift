@@ -1,35 +1,48 @@
 {% extends 'core/base.html' %} {% block content %}
 <h1>Timeshift</h1>
-<p>Time Dilation Calculator</p>
+<p>Time dilation calculator - Special & General Relativity</p>
 
 <h2>Recent Calculations</h2>
 {% if calculations %}
 <table>
   <thead>
     <tr>
-      <th>Velocity (c)</th>
-      <th>Proper time</th>
-      <th>Gamma</th>
-      <th>Dilated time</th>
+      <th>Type</th>
+      <th>Parameters</th>
+      <th>Proper Time</th>
+      <th>Dilated Time</th>
       <th>Date</th>
     </tr>
   </thead>
   <tbody>
     {% for calc in calculations %}
     <tr>
-      <td>{{ calc.velocity|floatformat:4 }} c</td>
+      <td>{{ calc.get_calculation_type_display }}</td>
+      <td>
+        {% if calc.calculation_type == 'relativistic' %} v = {{
+        calc.velocity|floatformat:4 }}c {% if calc.gamma %} (Gamma = {{
+        calc.gamma|floatformat:2 }}) {% endif %} {% else %} {{
+        calc.object_name|default:"Unknown object" }} {% if
+        calc.gravitational_factor %} (factor = {{
+        calc.gravitational_factor|floatformat:6 }}) {% endif %} {% endif %}
+      </td>
       <td>{{ calc.proper_time|floatformat:2 }} seconds</td>
-      <td>{{ calc.gamma|floatformat:2 }} seconds</td>
       <td>{{ calc.dilated_time|floatformat:2 }} seconds</td>
       <td>{{ calc.created_at|date:"Y-m-d H:i" }}</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
-{% else %}
-<p>
-  No calculations saved yet!
-  <a href="{% url 'core:relativistic' %}">Try one now</a>
-</p>
 
+<p><small>Showing last {{ calculations|length }} calculations</small></p>
+{% else %}
+<p>No calculations saved yet.</p>
+<ul>
+  <li>
+    <a href="{% url 'core:relativistic' %}">Try Relativitistic Time Dilation</a>
+  </li>
+  <li>
+    <a href="{% url 'core:gravitational' %}">Try Gravitational Time Dilation</a>
+  </li>
+</ul>
 {% endif %} {% endblock %}

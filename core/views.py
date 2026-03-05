@@ -70,6 +70,7 @@ def save_calculation(request):
         if result:
             try:
                 Calculation.objects.create(
+                    calculation_type="relativistic",
                     velocity=result["velocity"],
                     proper_time=result["proper_time"],
                     gamma=result["gamma"],
@@ -124,3 +125,24 @@ def gravitational_view(request):
         "core/gravitational.html",
         {"objects": GRAVITATIONAL_OBJECTS, "result": result, "error": error},
     )
+
+
+def save_gravitational(request):
+    if request.method == "POST":
+        result = request.session.get("grav_result")
+
+        if result:
+            Calculation.objects.create(
+                calculation_type="gravitational",
+                proper_time=result["proper_time"],
+                dilated_time=result["dilated_time"],
+                gravitational_factor=result["gravitational_factor"],
+                object_key=result["object_key"],
+                object_name=result["object_name"],
+            )
+            messages.success(request, "Gravitational calculation saved!")
+            request.session.pop("grav_result", None)
+        else:
+            messages.error(request, "No calculation to save.")
+
+    return redirect("core:gravitational")
