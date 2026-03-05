@@ -20,7 +20,7 @@
     />
     <output id="vDisplay">{{ form.velocity.value|default:'0' }}</output>
     {% if form.velocity.errors %}
-    <div style="color: red">{{ form.velocity.erros }}</div>
+    <div style="color: red">{{ form.velocity.errors }}</div>
     {% endif %}
   </div>
 
@@ -43,10 +43,8 @@
 <p>Gamma: {{ result.gamma }}</p>
 <p>Dilated time: {{ result.dilated_time }} seconds</p>
 
-<form method="post" action="{% url 'core:save_calculation' %}">
+<form method="post" action="{% url 'core:save_calculation' 'relativistic' %}">
   {% csrf_token %}
   <button type="submit">Save Calculation</button>
 </form>
-{% endif %} {% if form.velocity.errors %}
-<div style="color: red">{{ form.velocity.errors }}</div>
 {% endif %} {% endblock %}

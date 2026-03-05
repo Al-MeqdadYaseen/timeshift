@@ -6,6 +6,12 @@ from .utils import calculate_relativistic, calculate_gravitational
 from django.contrib import messages
 from .models import Calculation
 from .objects import GRAVITATIONAL_OBJECTS
+from .helper import (
+    store_calculation_result,
+    get_stored_result,
+    save_calculation_to_db,
+    clear_stored_result,
+)
 
 
 class HomeView(TemplateView):
@@ -28,61 +34,34 @@ def health_check(request):
 
 def relativistic_view(request):
     result = None
+    error = None
     if request.method == "POST":
         form = CalculationForm(request.POST)
         if form.is_valid():
             v = form.cleaned_data["velocity"]
             t0 = form.cleaned_data["proper_time"]
             gamma, dilated = calculate_relativistic(v, t0)
-            request.session["last_result"] = {
+            result = {
                 "velocity": v,
                 "proper_time": t0,
                 "gamma": gamma,
                 "dilated_time": dilated,
             }
-            request.session["calc_result"] = {
-                "velocity": v,
-                "proper_time": t0,
-                "gamma": gamma,
-                "dilated_time": dilated,
-            }
+            store_calculation_result(request, "relativistic", result)
             return redirect("core:relativistic")
     else:
-        request.session.get("calc_result", None)
-        result = request.session.pop("last_result", None)
+        form = CalculationForm()
+        result = get_stored_result(request, "relativistic")
         if result:
-            form = CalculationForm(
-                initial={
-                    "velocity": result["velocity"],
-                    "proper_time": result["proper_time"],
-                }
-            )
-        else:
-            form = CalculationForm()
+            clear_stored_result(
+                request, "relativistic"
+            )  # Clear after displaying to prevent persistence on refresh
 
-    return render(request, "core/relativistic.html", {"form": form, "result": result})
-
-
-def save_calculation(request):
-    if request.method == "POST":
-        result = request.session.get("calc_result")
-
-        if result:
-            try:
-                Calculation.objects.create(
-                    calculation_type="relativistic",
-                    velocity=result["velocity"],
-                    proper_time=result["proper_time"],
-                    gamma=result["gamma"],
-                    dilated_time=result["dilated_time"],
-                )
-                messages.success(request, "Calculation saved successfully!")
-            except (ValueError, TypeError, KeyError):
-                messages.error(request, "Failed to save calculation.")
-        else:
-            messages.error(request, "Calculate first to save!")
-
-    return redirect("core:relativistic")
+    return render(
+        request,
+        "core/relativistic.html",
+        {"form": form, "result": result, "error": error},
+    )
 
 
 def gravitational_view(request):
@@ -123,7 +102,7 @@ def gravitational_view(request):
                         dilated = calculate_gravitational(t0, factor)
 
                         # Store in session
-                        request.session["grav_result"] = {
+                        result = {
                             "calculation_type": "gravitational",
                             "proper_time": t0,
                             "dilated_time": dilated,
@@ -131,10 +110,18 @@ def gravitational_view(request):
                             "object_key": object_key,
                             "object_name": obj["name"],
                         }
-                        result = request.session["grav_result"]
+                        store_calculation_result(request, "gravitational", result)
+                        return redirect("core:gravitational")
 
         except Exception as e:
             error = f"Unexpected error: {str(e)}"
+        # Get result from session for GET requests
+    else:
+        result = get_stored_result(request, "gravitational")
+        if result:
+            clear_stored_result(
+                request, "gravitational"
+            )  # Clear after displaying to prevent persistence on refresh
 
     return render(
         request,
@@ -148,22 +135,24 @@ def gravitational_view(request):
     )
 
 
-def save_gravitational(request):
+# Unified Save View
+def save_calculation(request, calc_type):
+    """Generic save endpoint for both calculation types."""
     if request.method == "POST":
-        result = request.session.get("grav_result")
+        success = save_calculation_to_db(request, calc_type, messages)
 
-        if result:
-            Calculation.objects.create(
-                calculation_type="gravitational",
-                proper_time=result["proper_time"],
-                dilated_time=result["dilated_time"],
-                gravitational_factor=result["gravitational_factor"],
-                object_key=result["object_key"],
-                object_name=result["object_name"],
-            )
-            messages.success(request, "Gravitational calculation saved!")
-            request.session.pop("grav_result", None)
-        else:
-            messages.error(request, "No calculation to save.")
+        if not success and calc_type == "relativistic":
+            return redirect("core:relativistic")
+        elif not success and calc_type == "gravitational":
+            return redirect("core:gravitational")
 
-    return redirect("core:gravitational")
+    return redirect(f"core:{calc_type}")
+
+
+# Legacy save views (kept for backward compatibility)
+def save_calculation_relativistic(request):
+    return save_calculation(request, "relativistic")
+
+
+def save_calculation_gravitational(request):
+    return save_calculation(request, "gravitational")

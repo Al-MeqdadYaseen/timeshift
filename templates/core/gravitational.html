@@ -9,16 +9,7 @@
     <select name="object_key" id="object_key" required>
       <option value="">Select an object...</option>
       {% for key, obj in objects.items %}
-      <option
-        value="{{ key }}"
-        {%
-        if
-        request.POST.object_key=""
-        ="key"
-        %}selected{%
-        endif
-        %}
-      >
+      <option value="{{ key }}" {% if request.POST.object_key == key %}selected{% endif %}>
         {{ obj.name }} - {{ obj.description }}
       </option>
       {% endfor %}
@@ -54,7 +45,7 @@
   <strong>Dilated time: {{ result.dilated_time|floatformat:4 }} seconds</strong>
 </p>
 
-<form method="post" action="{% url 'core:save_gravitational' %}">
+<form method="post" action="{% url 'core:save_calculation' 'gravitational' %}">
   {% csrf_token %}
   <button type="submit">Save Calculation</button>
 </form>
