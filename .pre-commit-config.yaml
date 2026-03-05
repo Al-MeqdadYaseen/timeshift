@@ -17,3 +17,4 @@ repos:
         entry: npx prettier --write
         language: system
         types_or: [javascript, html, css, markdown, yaml]
+        exclude: "templates/.*\\.html$"

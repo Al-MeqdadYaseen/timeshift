@@ -91,39 +91,60 @@ def gravitational_view(request):
 
     if request.method == "POST":
         try:
-            t0 = float(request.POST.get("proper_time", ""))
-            object_key = request.POST.get("object_key")
+            # Get values with safe defaults
+            t0_str = request.POST.get("proper_time", "").strip()
+            object_key = request.POST.get("object_key", "").strip()
 
-            if not object_key:
+            # Validate presence
+            if not t0_str:
+                error = "Proper time is required"
+            elif not object_key:
                 error = "Please select an object"
-            elif t0 < 0:
-                error = "Time must be positive"
-            elif object_key not in GRAVITATIONAL_OBJECTS:
-                error = "Invalid object selection"
             else:
-                obj = GRAVITATIONAL_OBJECTS[object_key]
-                factor = obj["multiplier"]
-                dilated = calculate_gravitational(t0, factor)
+                try:
+                    t0 = float(t0_str)
+                except ValueError:
+                    error = "Proper time must be a valid number"
+                else:
+                    # Time validation
+                    if t0 < 0:
+                        error = "Proper time cannot be negative"
+                    elif t0 > 1e9:  # 1 billion years cap
+                        error = "Time value is too large (max 1e9 years)"
 
-                request.session["grav_result"] = {
-                    "calculation_type": "gravitational",
-                    "proper_time": t0,
-                    "dilated_time": dilated,
-                    "gravitational_factor": factor,
-                    "object_key": object_key,
-                    "object_name": obj["name"],
-                }
-                result = request.session["grav_result"]
+                    # Object validation (don't trust dropdown)
+                    elif object_key not in GRAVITATIONAL_OBJECTS:
+                        error = "Invalid object selection"
 
-        except ValueError:
-            error = "Please enter a valid number for time"
+                    # All validations passed
+                    else:
+                        obj = GRAVITATIONAL_OBJECTS[object_key]
+                        factor = obj["multiplier"]
+                        dilated = calculate_gravitational(t0, factor)
+
+                        # Store in session
+                        request.session["grav_result"] = {
+                            "calculation_type": "gravitational",
+                            "proper_time": t0,
+                            "dilated_time": dilated,
+                            "gravitational_factor": factor,
+                            "object_key": object_key,
+                            "object_name": obj["name"],
+                        }
+                        result = request.session["grav_result"]
+
         except Exception as e:
-            error = f"An error occurred: {str(e)}"
+            error = f"Unexpected error: {str(e)}"
 
     return render(
         request,
         "core/gravitational.html",
-        {"objects": GRAVITATIONAL_OBJECTS, "result": result, "error": error},
+        {
+            "objects": GRAVITATIONAL_OBJECTS,
+            "result": result,
+            "error": error,
+            "last_input": request.POST.get("proper_time", ""),  # Preserve form input
+        },
     )
 
 
