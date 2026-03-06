@@ -9,33 +9,20 @@
         {% csrf_token %}
         
         <div class="form-group">
-            <label for="object_key">Celestial Object:</label>
-            <select name="object_key" id="object_key" required>
-                <option value="">Select an object...</option>
-                {% for key, obj in objects.items %}
-                    <option value="{{ key }}" {% if request.POST.object_key == key %}selected{% endif %}>
-                        {{ obj.name }} - {{ obj.description }}
-                    </option>
-                {% endfor %}
-            </select>
+            <label for="{{ form.object_key.id_for_label }}">{{ form.object_key.label }}</label>
+            {{ form.object_key }}
+            {% if form.object_key.errors %}
+                <div class="error">{{ form.object_key.errors }}</div>
+            {% endif %}
         </div>
 
         <div class="form-group">
-            <label for="proper_time">Proper time (seconds):</label>
-            <input type="number" 
-                   name="proper_time" 
-                   id="proper_time"
-                   step="any"
-                   min="0"
-                   value="{{ request.POST.proper_time|default:'' }}"
-                   required>
+            <label for="{{ form.proper_time.id_for_label }}">{{ form.proper_time.label }}</label>
+            {{ form.proper_time }}
+            {% if form.proper_time.errors %}
+                <div class="error">{{ form.proper_time.errors }}</div>
+            {% endif %}
         </div>
-
-        {% if error %}
-            <div class="error">
-                Error: {{ error }}
-            </div>
-        {% endif %}
 
         <button type="submit" class="btn">Calculate</button>
     </form>

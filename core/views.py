@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
-from .forms import CalculationForm
+from .forms import CalculationForm, GravitationalForm
 from .utils import calculate_relativistic, calculate_gravitational
 from django.contrib import messages
 from .models import Calculation
@@ -81,60 +81,34 @@ def relativistic_view(request):
 
 def gravitational_view(request):
     result = None
-    error = None
-
     if request.method == "POST":
-        try:
-            # Get values with safe defaults
-            t0_str = request.POST.get("proper_time", "").strip()
-            object_key = request.POST.get("object_key", "").strip()
+        form = GravitationalForm(request.POST)
+        if form.is_valid():
+            t0 = form.cleaned_data["proper_time"]
+            object_key = form.cleaned_data["object_key"]
+            obj = GRAVITATIONAL_OBJECTS[object_key]
+            factor = obj["multiplier"]
+            dilated = calculate_gravitational(t0, factor)
 
-            # Validate presence
-            if not t0_str:
-                error = "Proper time is required"
-            elif not object_key:
-                error = "Please select an object"
-            else:
-                try:
-                    t0 = float(t0_str)
-                except ValueError:
-                    error = "Proper time must be a valid number"
-                else:
-                    # Time validation
-                    if t0 < 0:
-                        error = "Proper time cannot be negative"
-                    elif t0 > 1e9:  # 1 billion seconds cap
-                        error = "Time value is too large (max 1e9 years)"
-
-                    # Object validation (don't trust dropdown)
-                    elif object_key not in GRAVITATIONAL_OBJECTS:
-                        error = "Invalid object selection"
-
-                    # All validations passed
-                    else:
-                        obj = GRAVITATIONAL_OBJECTS[object_key]
-                        factor = obj["multiplier"]
-                        dilated = calculate_gravitational(t0, factor)
-
-                        # Store in session
-                        result = {
-                            "calculation_type": "gravitational",
-                            "proper_time": t0,
-                            "dilated_time": dilated,
-                            "gravitational_factor": factor,
-                            "object_key": object_key,
-                            "object_name": obj["name"],
-                        }
-                        store_calculation_result(request, "gravitational", result)
-                        request.session["gravitational_form"] = request.POST
-                        request.session["gravitational_displayed"] = False
-                        return redirect("core:gravitational")
-
-        except Exception as e:
-            error = f"Unexpected error: {str(e)}"
-        # Get result from session for GET requests
+            # Store in session
+            result = {
+                "calculation_type": "gravitational",
+                "proper_time": t0,
+                "dilated_time": dilated,
+                "gravitational_factor": factor,
+                "object_key": object_key,
+                "object_name": obj["name"],
+            }
+            store_calculation_result(request, "gravitational", result)
+            request.session["gravitational_form"] = request.POST
+            request.session["gravitational_displayed"] = False
+            return redirect("core:gravitational")
     else:
         form_data = request.session.get("gravitational_form")
+        if form_data:
+            form = GravitationalForm(form_data)
+        else:
+            form = GravitationalForm()
         result = get_stored_result(request, "gravitational")
         if result:
             displayed = request.session.get("gravitational_displayed", False)
@@ -143,21 +117,16 @@ def gravitational_view(request):
                 request.session["gravitational_displayed"] = False
                 request.session.pop("gravitational_form", None)
                 result = None
+                form = GravitationalForm()
             else:
                 request.session["gravitational_displayed"] = True
-
-    last_input = form_data.get("proper_time", "") if form_data else ""
-    last_object = form_data.get("object_key", "") if form_data else ""
 
     return render(
         request,
         "core/gravitational.html",
         {
-            "objects": GRAVITATIONAL_OBJECTS,
+            "form": form,
             "result": result,
-            "error": error,
-            "last_input": last_input,
-            "last_object": last_object,
         },
     )
 
