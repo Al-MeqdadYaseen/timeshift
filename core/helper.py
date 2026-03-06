@@ -2,9 +2,14 @@ from .models import Calculation
 
 
 def store_calculation_result(request, calc_type, data):
-    """Store calculation in session for later saving."""
+    """Store calculation in session for later saving.
+
+    Also clear any saved flag so the new result can be saved once.
+    """
     session_key = f"{calc_type}_result"
     request.session[session_key] = data
+    # reset duplicate save prevention
+    request.session.pop(f"{calc_type}_saved", None)
 
 
 def get_stored_result(request, calc_type):
@@ -25,6 +30,10 @@ def save_calculation_to_db(request, calc_type, messages_obj):
 
     if not result:
         messages_obj.error(request, "No calculation to save.")
+        return False
+    # prevent duplicate saves
+    if request.session.get(f"{calc_type}_saved"):
+        messages_obj.info(request, "Calculation has already been saved.")
         return False
 
     try:
@@ -47,7 +56,9 @@ def save_calculation_to_db(request, calc_type, messages_obj):
             )
 
         messages_obj.success(request, f"{calc_type.title()} calculation saved!")
-        clear_stored_result(request, calc_type)  # Clear session after successful save
+        # mark as saved to prevent duplicates
+        request.session[f"{calc_type}_saved"] = True
+        # Do not clear session after successful save to preserve results
         return True
 
     except Exception as e:

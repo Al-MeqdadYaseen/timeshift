@@ -1,52 +1,64 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h1>Timeshift</h1>
-<p>Time dilation calculator - Special & General Relativity</p>
-
-<h2>Recent Calculations</h2>
-{% if calculations %}
-    <table>
-        <thead>
-            <tr>
-                <th>Type</th>
-                <th>Parameters</th>
-                <th>Proper Time</th>
-                <th>Dilated Time</th>
-                <th>Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for calc in calculations %}
-            <tr>
-                <td>{{ calc.get_calculation_type_display }}</td>
-                <td>
-                    {% if calc.calculation_type == 'relativistic' %}
-                        v = {{ calc.velocity|floatformat:4 }}c
-                        {% if calc.gamma %}
-                            (Gamma = {{ calc.gamma|floatformat:2 }})
-                        {% endif %}
-                    {% else %}
-                        {{ calc.object_name|default:"Unknown object" }}
-                        {% if calc.gravitational_factor %}
-                            (factor = {{ calc.gravitational_factor|floatformat:6 }})
-                        {% endif %}
-                    {% endif %}
-                </td>
-                <td>{{ calc.proper_time|floatformat:2 }} seconds</td>
-                <td>{{ calc.dilated_time|floatformat:2 }} seconds</td>
-                <td>{{ calc.created_at|date:"Y-m-d H:i" }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    
-    <p><small>Showing last {{ calculations|length }} calculations</small></p>
-{% else %}
-    <p>No calculations saved yet.</p>
-    <ul>
-        <li><a href="{% url 'core:relativistic' %}">Try Relativitistic Time Dilation</a></li>
-        <li><a href="{% url 'core:gravitational' %}">Try Gravitational Time Dilation</a></li>
-    </ul>
-{% endif %}
+<div class="section">
+    <h2>📊 Saved Calculations</h2>
+    {% if calculations %}
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Input Parameters</th>
+                        <th>Result</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for calc in calculations %}
+                    <tr>
+                        <td>
+                            <span class="badge {% if calc.calculation_type == 'relativistic' %}badge-relativistic{% else %}badge-gravitational{% endif %}">
+                                {{ calc.get_calculation_type_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if calc.calculation_type == 'relativisitc' %}
+                                <strong>v</strong> = {{ calc.velocity|floatformat:4 }}c<br>
+                                <strong>t</strong> = {{ calc.proper_time|floatformat:2 }} seconds
+                                {% if calc.gamma %}
+                                    <br><small>gamma = {{ calc.gamma|floatformat:2 }}</small>
+                                {% endif %}
+                            {% else %}
+                                <strong>Object:</strong> {{ calc.object_name|default:"Unknown" }}<br>
+                                <strong>t</strong> = {{ calc.proper_time|floatformat:2 }} seconds
+                                {% if calc.gravitational_factor %}
+                                    <br><small>factor = {{ calc.gravitational_factor|floatformat:6 }}</small>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ calc.dilated_time|floatformat:2 }} seconds</strong>
+                        </td>
+                        <td>
+                            {{ calc.created_at|date:"M d, Y H:i" }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="table-note">
+            Showing {{ calculations|length }} most recent calculations • Newest first
+        </p>
+    {% else %}
+        <div class="empty-state">
+            <p>No calculations saved yet.</p>
+            <p>
+                <a href="{% url 'core:relativistic' %}" class="btn">Special Relativity</a>
+                <a href="{% url 'core:gravitational' %}" class="btn btn-secondary">Gravitational</a>
+            </p>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

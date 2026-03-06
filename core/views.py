@@ -48,14 +48,26 @@ def relativistic_view(request):
                 "dilated_time": dilated,
             }
             store_calculation_result(request, "relativistic", result)
+            request.session["relativistic_form"] = request.POST
+            request.session["relativistic_displayed"] = False
             return redirect("core:relativistic")
     else:
-        form = CalculationForm()
+        form_data = request.session.get("relativistic_form")
+        if form_data:
+            form = CalculationForm(form_data)
+        else:
+            form = CalculationForm()
         result = get_stored_result(request, "relativistic")
         if result:
-            clear_stored_result(
-                request, "relativistic"
-            )  # Clear after displaying to prevent persistence on refresh
+            displayed = request.session.get("relativistic_displayed", False)
+            if displayed:
+                clear_stored_result(request, "relativistic")
+                request.session["relativistic_displayed"] = False
+                request.session.pop("relativistic_form", None)
+                result = None
+                form = CalculationForm()
+            else:
+                request.session["relativistic_displayed"] = True
 
     return render(
         request,
@@ -111,17 +123,28 @@ def gravitational_view(request):
                             "object_name": obj["name"],
                         }
                         store_calculation_result(request, "gravitational", result)
+                        request.session["gravitational_form"] = request.POST
+                        request.session["gravitational_displayed"] = False
                         return redirect("core:gravitational")
 
         except Exception as e:
             error = f"Unexpected error: {str(e)}"
         # Get result from session for GET requests
     else:
+        form_data = request.session.get("gravitational_form")
         result = get_stored_result(request, "gravitational")
         if result:
-            clear_stored_result(
-                request, "gravitational"
-            )  # Clear after displaying to prevent persistence on refresh
+            displayed = request.session.get("gravitational_displayed", False)
+            if displayed:
+                clear_stored_result(request, "gravitational")
+                request.session["gravitational_displayed"] = False
+                request.session.pop("gravitational_form", None)
+                result = None
+            else:
+                request.session["gravitational_displayed"] = True
+
+    last_input = form_data.get("proper_time", "") if form_data else ""
+    last_object = form_data.get("object_key", "") if form_data else ""
 
     return render(
         request,
@@ -130,7 +153,8 @@ def gravitational_view(request):
             "objects": GRAVITATIONAL_OBJECTS,
             "result": result,
             "error": error,
-            "last_input": request.POST.get("proper_time", ""),  # Preserve form input
+            "last_input": last_input,
+            "last_object": last_object,
         },
     )
 
@@ -140,6 +164,9 @@ def save_calculation(request, calc_type):
     """Generic save endpoint for both calculation types."""
     if request.method == "POST":
         success = save_calculation_to_db(request, calc_type, messages)
+
+        # reset display flag so the next GET will show the result again
+        request.session[f"{calc_type}_displayed"] = False
 
         if not success and calc_type == "relativistic":
             return redirect("core:relativistic")

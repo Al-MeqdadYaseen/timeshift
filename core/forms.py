@@ -22,3 +22,9 @@ class CalculationForm(forms.Form):
             "min_value": "Proper time must a positive number",
         },
     )
+
+    def clean_proper_time(self):
+        data = self.cleaned_data["proper_time"]
+        if data <= 0:  # Reject zero and negative
+            raise forms.ValidationError("Proper time must be greater than zero")
+        return data
