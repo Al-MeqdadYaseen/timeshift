@@ -35,7 +35,11 @@
     <div class="result-box">
         <p>
             <span class="label">Location:</span>
-            {{ result.object_name }}
+            {% if result.object_name == 'Black Hole (near horizon)'%}
+                {{ result.object_name }}
+            {% else %}
+            {{ result.object_name }}'s surface
+            {% endif %}
         </p>
         
         <p>
@@ -72,4 +76,77 @@
     </form>
 </div>
 {% endif %}
+
+<!-- Explanation Section -->
+<div class="section">
+    <h2>📚 Understanding Gravitational Time Dilation</h2>
+    
+    <div class="concept-section">
+        <h3>What is gravitational time dilation?</h3>
+        <p>Einstein's theory of general relativity predicts that time passes slower in stronger gravitational fields. The closer you are to a massive object, the slower time moves relative to a distant observer. This isn't just theory, it's been measured and must be corrected for GPS satellites to work accurately.</p>
+    </div>
+    
+    <div class="concept-section">
+        <h3>The Formula</h3>
+        <p>The time dilation factor depends on mass and distance:</p>
+        <div class="formula-container">
+            factor = √(1 - 2GM/rc²)
+        </div>
+        <div class="formula-note">
+            <p>Where:</p>
+            <ul class="examples-list">
+                <li><strong>G</strong> = gravitational constant</li>
+                <li><strong>M</strong> = mass of the object</li>
+                <li><strong>r</strong> = distance from center</li>
+                <li><strong>c</strong> = speed of light</li>
+            </ul>
+        </div>
+        <p>The result is a number between 0 and 1 that tells you what fraction of "normal" time passes.</p>
+    </div>
+    
+    <div class="concept-section">
+        <h3>Examples from the universe</h3>
+        <table class="examples-table">
+            <thead>
+                <tr>
+                    <th>Object</th>
+                    <th>Dilation Factor</th>
+                    <th>What it means</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Earth's surface</td>
+                    <td>0.9999999993</td>
+                    <td>Time runs 0.00000007% slower — measurable but tiny</td>
+                </tr>
+                <tr>
+                    <td>Sun's surface</td>
+                    <td>0.9999989</td>
+                    <td>Still small, but 1000x stronger than Earth</td>
+                </tr>
+                <tr>
+                    <td>White dwarf</td>
+                    <td>0.9997</td>
+                    <td>Noticeable effect: time runs 0.03% slower</td>
+                </tr>
+                <tr>
+                    <td>Neutron star</td>
+                    <td>0.77</td>
+                    <td>Time runs 23% slower — very noticeable</td>
+                </tr>
+                <tr>
+                    <td>Black hole (near horizon)</td>
+                    <td>0.1</td>
+                    <td>Time runs 90% slower — extreme!</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="info-box">
+            <p>Near a black hole's event horizon, time slows to almost a standstill. If you watched someone fall in, they'd appear to freeze in time.</p>
+        </div>
+    </div>
+</div>
 {% endblock %}
+
+<!-- AI helped me with the explanation, form rendering, and styling -->

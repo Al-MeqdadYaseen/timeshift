@@ -107,7 +107,7 @@ main {
 .form-group input[type="number"],
 .form-group select {
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
   padding: 0.75rem;
   border: 2px solid #e0e0e0;
   border-radius: 6px;
@@ -386,3 +386,184 @@ tr:hover {
     padding: 0.5rem;
   }
 }
+
+/* Explanation Section */
+.explanation-wrapper {
+  margin-bottom: 2rem;
+}
+
+.explanation-title {
+  color: #2c5282;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.formula-container {
+  background: #f0f0f0;
+  padding: 1rem;
+  border-radius: 4px;
+  font-family: "Courier New", monospace;
+  font-size: 1.2rem;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.formula-note {
+  margin-top: 0.5rem;
+  line-height: 1.8;
+}
+
+.formula-note strong {
+  color: #2d3748;
+}
+
+.examples-list {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.examples-list li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.examples-note {
+  margin-top: 1rem;
+  font-style: italic;
+  color: #666;
+}
+
+/* Gravitational examples table */
+.examples-table {
+  width: 100%;
+  margin: 1rem 0;
+  border-collapse: collapse;
+}
+
+.examples-table th {
+  background: #e2e8f0;
+  color: #2d3748;
+  font-weight: 600;
+  padding: 0.75rem;
+  text-align: left;
+  border: 1px solid #cbd5e0;
+}
+
+.examples-table td {
+  padding: 0.75rem;
+  border: 1px solid #cbd5e0;
+  vertical-align: top;
+}
+
+.examples-table tr:hover {
+  background: #f7fafc;
+}
+
+/* Physics concept sections */
+.concept-section {
+  margin-bottom: 2rem;
+}
+
+.concept-section h3 {
+  color: #2c5282;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.concept-section p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+
+/* Info box */
+.info-box {
+  background: #ebf8ff;
+  border-left: 4px solid #4299e1;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.info-box p {
+  margin: 0;
+  color: #2c5282;
+}
+
+/* Highlight text */
+.highlight {
+  background: #fefcbf;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+/* Introduction text */
+.intro-text {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #4a5568;
+  margin-bottom: 1.5rem;
+}
+
+/* Feature cards */
+.feature-card {
+  flex: 1;
+  min-width: 250px;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  transition: transform 0.2s;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+}
+
+.feature-card h3 {
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.feature-card.special h3 {
+  color: #667eea;
+}
+
+.feature-card.gravitational h3 {
+  color: #48bb78;
+}
+
+.feature-card p {
+  color: #4a5568;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.feature-card .btn {
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+/* Feature container */
+.feature-container {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+/* Info box enhancement */
+.info-box {
+  background: #ebf8ff;
+  border-left: 4px solid #4299e1;
+  padding: 1rem 1.5rem;
+  margin-top: 2rem;
+  border-radius: 0 4px 4px 0;
+}
+
+.info-box p {
+  margin: 0;
+  color: #2c5282;
+  font-size: 1.1rem;
+}
+
+/* AI helped me with styling like padding, choosing the colors, fonts, and sizes */

@@ -34,3 +34,5 @@ GRAVITATIONAL_OBJECTS = {
 
 # List of keys for iteration
 OBJECTS_KEYS = list(GRAVITATIONAL_OBJECTS.keys())
+
+# AI helped me with the factors estimates here

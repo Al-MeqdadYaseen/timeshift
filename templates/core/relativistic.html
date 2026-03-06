@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="section">
-    <h2>⚡ Special Relativity Calculator</h2>
+    <h2>⚡ Relativitistic Time Dilation Calculator</h2>
     <p>Calculate time dilation for objects moving at relativistic speeds.</p>
 
     <form method="post">
@@ -42,16 +42,16 @@
     <div class="result-box">
         <p>
             <span class="label">Time experienced by traveler:</span>
-            {{ result.proper_time|floatformat:2 }} years
+            {{ result.proper_time|floatformat:2 }} seconds
         </p>
         
         <p>
             <span class="label">Observed time on Earth:</span>
-            {{ result.dilated_time|floatformat:2 }} years
+            {{ result.dilated_time|floatformat:2 }} seconds
         </p>
         
         <p>
-            <span class="label">Time dilation factor (γ):</span>
+            <span class="label">Time dilation factor (gamma):</span>
             {{ result.gamma|floatformat:3 }}
         </p>
         
@@ -74,4 +74,44 @@
     </form>
 </div>
 {% endif %}
+
+<!-- Explanation Section -->
+<div class="section">
+    <h2>📚 Understanding Special Relativity</h2>
+    
+    <div class="concept-section">
+        <h3>What is time dilation?</h3>
+        <p>When an object moves at speeds close to the speed of light, time passes slower for that object relative to a stationary observer. This isn't just a theory, it's been measured experimentally with atomic clocks on airplanes and particles in accelerators.</p>
+    </div>
+    
+    <div class="concept-section">
+        <h3>The Formula</h3>
+        <p>The time dilation factor (γ, or gamma) is calculated as:</p>
+        <div class="formula-container">
+            γ = 1 / √(1 - v²/c²)
+        </div>
+        <div class="formula-note">
+            <p>Where:</p>
+            <ul class="examples-list">
+                <li><strong>v</strong> = velocity of the moving object</li>
+                <li><strong>c</strong> = speed of light (we measure v as a fraction of c)</li>
+                <li><strong>γ</strong> (gamma) = how many times slower time runs</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="concept-section">
+        <h3>Examples from everyday life</h3>
+        <ul class="examples-list">
+            <li><strong>Walking speed (0.0000001c):</strong> γ ≈ 1.000000000000005 — completely unnoticeable</li>
+            <li><strong>Satellite speed (0.00003c):</strong> γ ≈ 1.0000000005 — GPS satellites must correct for this</li>
+            <li><strong>Particle accelerators (0.999999c):</strong> γ ≈ 707 — particles live much longer than they "should"</li>
+        </ul>
+        <div class="info-box">
+            <p>The closer you get to light speed, the more dramatic the effect becomes. At 99.9999% of light speed, time runs <span class="highlight">707 times slower</span>!</p>
+        </div>
+    </div>
+</div>
 {% endblock %}
+
+<!-- AI helped me with rendering the formula and explanation -->

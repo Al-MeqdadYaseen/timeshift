@@ -119,3 +119,5 @@ STATIC_URL = "static/"
 STATIC_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# AI helped with setting up the environment settings

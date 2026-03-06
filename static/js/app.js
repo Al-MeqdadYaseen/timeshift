@@ -27,3 +27,5 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 console.log("Timeshift loaded");
+
+// AI helped me with preventing duplicate saves (frontend) and updating the display value of the velocity slider

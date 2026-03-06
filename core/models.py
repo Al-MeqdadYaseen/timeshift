@@ -51,6 +51,9 @@ class Calculation(models.Model):
 
     def __str__(self):
         if self.calculation_type == "relativistic":
-            return f"Relativistic: v={self.velocity:.3f}c, τ={self.proper_time}"
+            return f"Relativistic: v={self.velocity:.3f}c, t={self.proper_time}"
         else:
-            return f"Gravitational: {self.object_name}, τ={self.proper_time}"
+            return f"Gravitational: {self.object_name}, t={self.proper_time}"
+
+
+# AI helped me here with some validation and design the model to save both relativistic and gravitational calculations

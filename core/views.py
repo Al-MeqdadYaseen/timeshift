@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
-from .forms import CalculationForm, GravitationalForm
+from .forms import RelativisticForm, GravitationalForm
 from .utils import calculate_relativistic, calculate_gravitational
 from django.contrib import messages
 from .models import Calculation
@@ -36,7 +36,7 @@ def relativistic_view(request):
     result = None
     error = None
     if request.method == "POST":
-        form = CalculationForm(request.POST)
+        form = RelativisticForm(request.POST)
         if form.is_valid():
             v = form.cleaned_data["velocity"]
             t0 = form.cleaned_data["proper_time"]
@@ -57,9 +57,9 @@ def relativistic_view(request):
     else:
         form_data = request.session.get("relativistic_form")
         if form_data:
-            form = CalculationForm(form_data)
+            form = RelativisticForm(form_data)
         else:
-            form = CalculationForm()
+            form = RelativisticForm()
         result = get_stored_result(request, "relativistic")
         if result:
             displayed = request.session.get("relativistic_displayed", False)
@@ -68,7 +68,7 @@ def relativistic_view(request):
                 request.session["relativistic_displayed"] = False
                 request.session.pop("relativistic_form", None)
                 result = None
-                form = CalculationForm()
+                form = RelativisticForm()
             else:
                 request.session["relativistic_displayed"] = True
 
@@ -159,3 +159,6 @@ def save_calculation_relativistic(request):
 
 def save_calculation_gravitational(request):
     return save_calculation(request, "gravitational")
+
+
+# AI helped me with form validation in the views function, setting up the PRG (POST, Redirect, GET) sturcture for the views, and make the inputs and results persist after calculation and saving but get cleared when the page is refreshed.

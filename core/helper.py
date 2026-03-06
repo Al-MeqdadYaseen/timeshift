@@ -64,3 +64,6 @@ def save_calculation_to_db(request, calc_type, messages_obj):
     except Exception as e:
         messages_obj.error(request, f"Failed to save: {str(e)}")
         return False
+
+
+# AI helped me with refactoring code from views for better architecture and with preventing duplicate saves

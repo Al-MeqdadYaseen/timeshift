@@ -1,6 +1,33 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
+<!-- Introduction Section -->
+<div class="section">
+    <h2>⏱️ Welcome to Timeshift</h2>
+    <p class="intro-text">
+        Timeshift is an simple interactive tool to explore one of the most fascinating predictions of Einstein's theory of relativity: <strong>time dilation</strong>.
+    </p>
+    
+    <div class="feature-container">
+        <div class="feature-card relativistic">
+            <h3>⚡Relativitistic</h3>
+            <p>When objects move at speeds close to light, time slows down. The faster you go, the slower time passes for you relative to a stationary observer.</p>
+            <p><a href="{% url 'core:relativistic' %}" class="btn">Try Calculator →</a></p>
+        </div>
+        
+        <div class="feature-card gravitational">
+            <h3>🌍 Gravitational Time Dilation</h3>
+            <p>Strong gravity also slows time. Near massive objects like neutron stars or black holes, time runs significantly slower than observed from a distance.</p>
+            <p><a href="{% url 'core:gravitational' %}" class="btn btn-secondary">Try Calculator →</a></p>
+        </div>
+    </div>
+    
+    <div class="info-box">
+        <p>✨ Both effects are real and measured. GPS satellites must correct for both relativistic and gravitational time dilation to give accurate positioning!</p>
+    </div>
+</div>
+
+<!-- Saved Calculations Section -->
 <div class="section">
     <h2>📊 Saved Calculations</h2>
     {% if calculations %}
@@ -23,17 +50,17 @@
                             </span>
                         </td>
                         <td>
-                            {% if calc.calculation_type == 'relativisitc' %}
+                            {% if calc.calculation_type == 'relativistic' %}
                                 <strong>v</strong> = {{ calc.velocity|floatformat:4 }}c<br>
                                 <strong>t</strong> = {{ calc.proper_time|floatformat:2 }} seconds
                                 {% if calc.gamma %}
-                                    <br><small>gamma = {{ calc.gamma|floatformat:2 }}</small>
+                                    <br><small>Time dilation factor = {{ calc.gamma|floatformat:2 }}</small>
                                 {% endif %}
                             {% else %}
                                 <strong>Object:</strong> {{ calc.object_name|default:"Unknown" }}<br>
                                 <strong>t</strong> = {{ calc.proper_time|floatformat:2 }} seconds
                                 {% if calc.gravitational_factor %}
-                                    <br><small>factor = {{ calc.gravitational_factor|floatformat:6 }}</small>
+                                    <br><small>Time dilation factor = {{ calc.gravitational_factor|floatformat:6 }}</small>
                                 {% endif %}
                             {% endif %}
                         </td>
@@ -53,12 +80,10 @@
         </p>
     {% else %}
         <div class="empty-state">
-            <p>No calculations saved yet.</p>
-            <p>
-                <a href="{% url 'core:relativistic' %}" class="btn">Special Relativity</a>
-                <a href="{% url 'core:gravitational' %}" class="btn btn-secondary">Gravitational</a>
-            </p>
+            <p>No calculations saved yet. Try one of the calculators above!</p>
         </div>
     {% endif %}
 </div>
 {% endblock %}
+
+<!-- Rendering the table with values and the styling was with the help of AI -->

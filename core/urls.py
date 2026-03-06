@@ -7,5 +7,6 @@ urlpatterns = [
     path("health/", views.health_check, name="health"),
     path("relativistic/", views.relativistic_view, name="relativistic"),
     path("gravitational/", views.gravitational_view, name="gravitational"),
+    # AI helped me here to unify save for relativistic and gravitational routes
     path("save/<str:calc_type>/", views.save_calculation, name="save_calculation"),
 ]
