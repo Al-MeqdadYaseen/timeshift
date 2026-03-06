@@ -29,7 +29,7 @@ def save_calculation_to_db(request, calc_type, messages_obj):
     result = get_stored_result(request, calc_type)
 
     if not result:
-        messages_obj.error(request, "No calculation to save.")
+        messages_obj.error(request, "No calculation to save. Please calculate first")
         return False
     # prevent duplicate saves
     if request.session.get(f"{calc_type}_saved"):

@@ -51,6 +51,9 @@ def relativistic_view(request):
             request.session["relativistic_form"] = request.POST
             request.session["relativistic_displayed"] = False
             return redirect("core:relativistic")
+        else:
+            # Form validation failed
+            error = "Please correct the errors below."
     else:
         form_data = request.session.get("relativistic_form")
         if form_data:
@@ -100,7 +103,7 @@ def gravitational_view(request):
                     # Time validation
                     if t0 < 0:
                         error = "Proper time cannot be negative"
-                    elif t0 > 1e9:  # 1 billion years cap
+                    elif t0 > 1e9:  # 1 billion seconds cap
                         error = "Time value is too large (max 1e9 years)"
 
                     # Object validation (don't trust dropdown)
@@ -163,11 +166,15 @@ def gravitational_view(request):
 def save_calculation(request, calc_type):
     """Generic save endpoint for both calculation types."""
     if request.method == "POST":
-        success = save_calculation_to_db(request, calc_type, messages)
 
         # reset display flag so the next GET will show the result again
         request.session[f"{calc_type}_displayed"] = False
-
+        # Check if result exists in session
+        result = request.session.get(f"{calc_type}_result")
+        if not result:
+            messages.error(request, "No calculation to save. Please calculate first.")
+            return redirect(f"core:{calc_type}")
+        success = save_calculation_to_db(request, calc_type, messages)
         if not success and calc_type == "relativistic":
             return redirect("core:relativistic")
         elif not success and calc_type == "gravitational":
