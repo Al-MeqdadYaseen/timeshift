@@ -156,6 +156,9 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+node_modules/
+staticfiles/
+Timeshift.zip
 
 # Spyder project settings
 .spyderproject
