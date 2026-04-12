@@ -31,10 +31,10 @@ DEBUG = env.bool("DEBUG", default=False)
 TESTING = "test" in sys.argv
 
 ALLOWED_HOSTS = env.list(
-    "ALLOWED_HOSTS", default=["127.0.0.1", "localhost", "timeshift.vercel.app"]
+    "ALLOWED_HOSTS", default=["127.0.0.1", "localhost", "https://timeshift-mu.vercel.app/"]
 )
 CSRF_TRUSTED_ORIGINS = env.list(
-    "CSRF_TRUSTED_ORIGINS", default=["https://timeshift.vercel.app"]
+    "CSRF_TRUSTED_ORIGINS", default=["https://timeshift-mu.vercel.app/"]
 )
 
 if TESTING and "testserver" not in ALLOWED_HOSTS:
