@@ -58,6 +58,7 @@ Timeshift is now configured for production-oriented deployment without changing 
 - `DEBUG` should remain `False` in production.
 - `ALLOWED_HOSTS` must include the deployed hostname or domain.
 - `CSRF_TRUSTED_ORIGINS` should include the full HTTPS origin for the deployed site.
+- On Vercel, you must set `SECRET_KEY` in Project Settings -> Environment Variables. The April 28, 2026 deployment crash was caused by this variable being missing at runtime.
 - Static files are served through WhiteNoise after running:
 
 ```bash
@@ -93,6 +94,15 @@ Run these before deploying:
 ```bash
 python manage.py check --deploy
 python manage.py test
+```
+
+Recommended Vercel production values:
+
+```env
+SECRET_KEY=<long-random-secret>
+DATABASE_URL=<your-production-database-url>
+ALLOWED_HOSTS=timeshift-mu.vercel.app
+CSRF_TRUSTED_ORIGINS=https://timeshift-mu.vercel.app
 ```
 
 ## Project Behavior

@@ -31,11 +31,28 @@ DEBUG = env.bool("DEBUG", default=False)
 TESTING = "test" in sys.argv
 
 ALLOWED_HOSTS = env.list(
-    "ALLOWED_HOSTS", default=["127.0.0.1", "localhost", "https://timeshift-mu.vercel.app/"]
+    "ALLOWED_HOSTS", default=["127.0.0.1", "localhost", "timeshift-mu.vercel.app"]
 )
 CSRF_TRUSTED_ORIGINS = env.list(
-    "CSRF_TRUSTED_ORIGINS", default=["https://timeshift-mu.vercel.app/"]
+    "CSRF_TRUSTED_ORIGINS",
+    default=[
+        "http://127.0.0.1:8000",
+        "http://localhost:8000",
+        "https://timeshift-mu.vercel.app",
+    ],
 )
+
+vercel_url = env("VERCEL_URL", default="").replace("https://", "").replace(
+    "http://", ""
+).rstrip("/")
+
+if vercel_url:
+    if vercel_url not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(vercel_url)
+
+    vercel_origin = f"https://{vercel_url}"
+    if vercel_origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(vercel_origin)
 
 if TESTING and "testserver" not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append("testserver")
